@@ -22,6 +22,26 @@ Artonchain is my personal project to bring my artwork on-chain as NFTs while I l
    forge test
    ```
 
+## Blockchain Infrastructure
+
+### Sepolia 🧪
+**Sepolia** is a testnet (test network) for Ethereum:
+- **Purpose**: A testing environment that mimics the real Ethereum network
+- **Free**: Uses "fake" ETH that has no real value
+- **Safe**: Perfect for testing smart contracts before deploying to mainnet
+- **Why use it**: Deploy and test your contracts without spending real money
+
+### Infura & Alchemy 🔗
+**Infura** and **Alchemy** are blockchain infrastructure providers:
+- **What they do**: Provide reliable RPC endpoints to connect to Ethereum networks
+- **RPC Endpoint**: A URL that lets your app communicate with the blockchain
+- **Why use them**: Instead of running your own Ethereum node (expensive/complex), you use their infrastructure
+- **Services**: Offer access to Ethereum, IPFS, and other blockchain networks
+
+**Example RPC URLs:**
+- Infura: `https://sepolia.infura.io/v3/YOUR_PROJECT_ID`
+- Alchemy: `https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY`
+
 ## Deployment
 
 Deploy your Artonchain NFT contract to Sepolia testnet:
