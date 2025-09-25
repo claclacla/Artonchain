@@ -31,6 +31,10 @@ Artonchain is my personal project to bring my artwork on-chain as NFTs while I l
 - **Safe**: Perfect for testing smart contracts before deploying to mainnet
 - **Why use it**: Deploy and test your contracts without spending real money
 
+**Getting Sepolia ETH:**
+You'll need Sepolia ETH to pay for gas fees when deploying contracts. Get free test ETH from:
+- [Google Cloud Web3 Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) - Recommended for this project
+
 ### Alchemy 🔗
 **Alchemy** is the blockchain infrastructure provider used in this project:
 - **What it does**: Provides reliable RPC endpoints to connect to Ethereum networks
