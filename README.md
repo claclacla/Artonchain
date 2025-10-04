@@ -65,7 +65,10 @@ Deploy your Artonchain NFT contract to Sepolia testnet:
 
 2. **Deploy to Sepolia**
    ```bash
-   forge script script/Deploy.s.sol --rpc-url sepolia --broadcast --verify
+   forge script script/Deploy.s.sol:Deploy \
+  --rpc-url $SEPOLIA_RPC_URL \
+  --private-key $PRIVATE_KEY \
+  --broadcast
    ```
 
 ## Project Goals
