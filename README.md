@@ -71,6 +71,30 @@ Deploy your Artonchain NFT contract to Sepolia testnet:
   --broadcast
    ```
 
+## Mobile App
+
+**React Native app** for deploying and minting NFTs directly from mobile:
+
+### Setup
+1. **Navigate to app directory**
+   ```bash
+   cd artonchain-app
+   npm install
+   ```
+
+2. **Run on iOS/Android**
+   ```bash
+   npx expo start
+   ```
+
+### App Functions
+- **Deploy Contract**: Creates the NFT contract on blockchain (one-time setup)
+- **Mint NFT**: Creates individual NFTs using the deployed contract (can do many times)
+
+### Environment Variables
+- `SEPOLIA_RPC_URL`: Your Alchemy Sepolia endpoint
+- `PRIVATE_KEY`: Your wallet private key (without 0x prefix)
+
 ## Project Goals
 
 - **Daily Learning**: Consistent progress in Web3 development
