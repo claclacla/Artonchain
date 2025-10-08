@@ -1,10 +1,6 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
 
-// Debug: Log the loaded environment variables
-console.log("SEPOLIA_RPC_URL:", process.env.SEPOLIA_RPC_URL);
-console.log("PRIVATE_KEY:", process.env.PRIVATE_KEY ? "***SET***" : "NOT SET");
-
 export default {
   expo: {
     name: "artonchain-app",

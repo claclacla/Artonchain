@@ -95,6 +95,20 @@ Deploy your Artonchain NFT contract to Sepolia testnet:
 - `SEPOLIA_RPC_URL`: Your Alchemy Sepolia endpoint
 - `PRIVATE_KEY`: Your wallet private key (without 0x prefix)
 
+## File Storage
+
+### Pinata 📌
+**Pinata** is a decentralized storage service for IPFS (InterPlanetary File System):
+- **What it does**: Provides reliable IPFS pinning and hosting for NFT metadata and images
+- **Why use it**: Ensures your NFT artwork files remain accessible and don't get garbage collected
+- **NFT Integration**: Stores artwork images and metadata JSON files that your smart contract references
+- **Permanent Links**: Creates immutable IPFS hashes that can't be changed or deleted
+
+**Project Files on Pinata:**
+- NFT artwork images (PNG, JPG, GIF, etc.)
+- Metadata JSON files containing artwork details
+- IPFS URIs that your smart contract uses for minting
+
 ## Project Goals
 
 - **Daily Learning**: Consistent progress in Web3 development

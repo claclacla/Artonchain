@@ -7,11 +7,14 @@ import { ethers } from "ethers";
 import artifact from "./Artonchain.json"; // <— copied from Foundry out/
 import { RPC_URL, PRIVATE_KEY } from "./env";
 
+// Hard-coded metadata URI from Pinata (replace with your actual CID)
+const METADATA_URI = "ipfs://bafkreigoqqmkxerb3jtlqsbo3sfnw4koho4rwfidp6jlrvinmiwnt4wpbe";
+
 export default function App() {
   const [busy, setBusy] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
 
-  const deploy = async () => {
+  const deployContact = async () => {
     if (!RPC_URL || !PRIVATE_KEY) {
       Alert.alert("Missing env", "Start with PRIVATE_KEY and SEPOLIA_RPC_URL set.");
       return;
@@ -38,7 +41,7 @@ export default function App() {
     }
   };
 
-  const mintSelf = async () => {
+  const mintToMySelf = async () => {
     if (!RPC_URL || !PRIVATE_KEY) {
       Alert.alert("Missing env", "Start with PRIVATE_KEY and SEPOLIA_RPC_URL set.");
       return;
@@ -53,10 +56,11 @@ export default function App() {
       const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
       const contract = new ethers.Contract(address, artifact.abi, wallet);
 
-      // calls your mintArt(address) — mints to yourself
-      const tx = await contract.mintArt(wallet.address);
+      // calls your mintArt(address, string) with metadata URI — mints to yourself
+      const tx = await contract.mintArt(wallet.address, METADATA_URI);
       await tx.wait();
       Alert.alert("Minted ✅", `Tx: ${tx.hash}`);
+      console.log(`Tx: ${tx.hash}`);
     } catch (e: any) {
       Alert.alert("Mint failed", e?.message ?? String(e));
     } finally {
@@ -71,8 +75,8 @@ export default function App() {
         <Text selectable>RPC: {RPC_URL ?? "(not set)"}</Text>
         <Text selectable>Contract: {address ?? "(not deployed yet)"}</Text>
 
-        <Button title={busy ? "Working..." : "Deploy Contract"} onPress={deploy} disabled={busy} />
-        <Button title={busy ? "Working..." : "Mint to Self"} onPress={mintSelf} disabled={busy || !address} />
+        <Button title={busy ? "Working..." : "Deploy Contract"} onPress={deployContact} disabled={busy} />
+        <Button title={busy ? "Working..." : "Mint to Self"} onPress={mintToMySelf} disabled={busy || !address} />
       </View>
     </SafeAreaView>
   );
