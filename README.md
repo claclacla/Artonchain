@@ -95,6 +95,13 @@ Deploy your Artonchain NFT contract to Sepolia testnet:
 - `SEPOLIA_RPC_URL`: Your Alchemy Sepolia endpoint
 - `PRIVATE_KEY`: Your wallet private key (without 0x prefix)
 
+### Test NFT Metadata
+For testing, use this sample NFT metadata CID:
+```
+ipfs://bafkreigoqqmkxerb3jtlqsbo3sfnw4koho4rwfidp6jlrvinmiwnt4wpbe
+```
+This metadata contains a test artwork image and description.
+
 ## File Storage
 
 ### Pinata 📌
