@@ -13,7 +13,9 @@ contract ArtonchainTest is Test {
     }
 
     function testMint() public {
-        uint256 id = nft.mintArt(me);
+        string memory uri = "ipfs://test-metadata-uri";
+        uint256 id = nft.mintArt(me, uri);
         assertEq(nft.ownerOf(id), me);
+        assertEq(nft.tokenURI(id), uri);
     }
 }
