@@ -1,7 +1,7 @@
 // App.tsx
 import "react-native-get-random-values"; // required by ethers in RN
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, AppRegistry } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, AppRegistry } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ethers } from "ethers";
 import artifact from "./Artonchain.json"; // <— copied from Foundry out/
@@ -13,10 +13,11 @@ export default function App() {
   const [address, setAddress] = useState<string | null>(null);
   const [uri, setUri] = useState("ipfs://");
   const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
+  const [mintedTxHash, setMintedTxHash] = useState<string | null>(null);
+  const [uriError, setUriError] = useState<string | null>(null);
 
   const deployContact = async () => {
     if (!RPC_URL || !PRIVATE_KEY) {
-      Alert.alert("Missing env", "Start with PRIVATE_KEY and SEPOLIA_RPC_URL set.");
       return;
     }
     setDeployingContract(true);
@@ -33,9 +34,8 @@ export default function App() {
       const contract = await factory.deploy(); // no constructor args
       await contract.deployed();
       setAddress(contract.address);
-      Alert.alert("Deployed 🎉", `Address: ${contract.address}`);
     } catch (e: any) {
-      Alert.alert("Deploy failed", e?.message ?? String(e));
+      console.error("Deploy failed:", e?.message ?? String(e));
     } finally {
       setDeployingContract(false);
     }
@@ -43,13 +43,19 @@ export default function App() {
 
   const mintToMySelf = async () => {
     if (!RPC_URL || !PRIVATE_KEY) {
-      Alert.alert("Missing env", "Start with PRIVATE_KEY and SEPOLIA_RPC_URL set.");
       return;
     }
     if (!address) {
-      Alert.alert("No contract", "Deploy first to get the contract address.");
       return;
     }
+    
+    // Validate IPFS URI format
+    if (!uri.startsWith("ipfs://") || uri.length < 15) {
+      setUriError("Invalid IPFS URI format. Must start with 'ipfs://' followed by a valid CID");
+      return;
+    }
+    
+    setUriError(null);
     setMinting(true);
     try {
       const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
@@ -67,11 +73,11 @@ export default function App() {
       if (tokenId) {
         setMintedTokenId(tokenId);
       }
+      setMintedTxHash(tx.hash);
       
-      Alert.alert("Minted ✅", `Token ID: ${tokenId}\nTx: ${tx.hash}`);
-      console.log(`Tx: ${tx.hash}`);
+      console.log(`Minted - Token ID: ${tokenId}, Tx: ${tx.hash}`);
     } catch (e: any) {
-      Alert.alert("Mint failed", e?.message ?? String(e));
+      console.error("Mint failed:", e?.message ?? String(e));
     } finally {
       setMinting(false);
     }
@@ -124,22 +130,35 @@ export default function App() {
           <Text style={{ marginBottom: 8 }}>Metadata URI (ipfs://…)</Text>
           <TextInput
             value={uri}
-            onChangeText={setUri}
+            onChangeText={(text) => {
+              setUri(text);
+              if (uriError) setUriError(null); // Clear error when user types
+            }}
             placeholder="ipfs://..."
             style={{
               borderWidth: 1,
-              borderColor: "#ccc",
+              borderColor: uriError ? "#ff0000" : "#ccc",
               borderRadius: 4,
               padding: 8,
               fontSize: 14,
-              marginBottom: 12,
+              marginBottom: uriError ? 4 : 12,
               backgroundColor: address ? "#fff" : "#f0f0f0"
             }}
             editable={!minting && !!address}
           />
+          
+          {uriError && (
+            <Text style={{ color: "#ff0000", fontSize: 12, marginBottom: 12 }}>
+              {uriError}
+            </Text>
+          )}
 
-          <Text selectable style={{ marginBottom: 12 }}>
+          <Text selectable style={{ marginBottom: 4 }}>
             Minted Token ID: {mintedTokenId ?? "(not minted yet)"}
+          </Text>
+          
+          <Text selectable style={{ marginBottom: 12, fontSize: 12 }}>
+            Tx Hash: {mintedTxHash ?? "(not minted yet)"}
           </Text>
           
           <TouchableOpacity
