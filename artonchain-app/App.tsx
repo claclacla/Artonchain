@@ -98,34 +98,31 @@ export default function App() {
           backgroundColor: "#f9f9f9" 
         }}>
           <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 12 }}>Contract</Text>
-          <Text selectable style={{ marginBottom: 4 }}>RPC: {RPC_URL ?? "(not set)"}</Text>
           
-          <View style={{ flexDirection: "row", marginBottom: 12, gap: 8 }}>
-            <View style={{
-              flex: 1,
-              borderWidth: 1,
-              borderColor: "#ddd",
-              borderRadius: 4,
-              padding: 8,
-              backgroundColor: "#fff"
-            }}>
-              <Text style={{ fontSize: 12, color: "#666", marginBottom: 2 }}>Contract</Text>
-              <Text 
-                selectable 
-                style={{ fontSize: 14 }} 
-                numberOfLines={1} 
-                ellipsizeMode="tail"
-              >
-                {address ?? "(not deployed yet)"}
-              </Text>
-            </View>
-            
-            {address && (
+          {address && (
+            <View style={{ flexDirection: "row", marginBottom: 12, gap: 8 }}>
+              <View style={{
+                flex: 1,
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 4,
+                padding: 8,
+                backgroundColor: "#fff"
+              }}>
+                <Text style={{ fontSize: 12, color: "#666", marginBottom: 2 }}>Contract</Text>
+                <Text 
+                  selectable 
+                  style={{ fontSize: 14 }} 
+                  numberOfLines={1} 
+                  ellipsizeMode="tail"
+                >
+                  {address}
+                </Text>
+              </View>
+              
               <TouchableOpacity
                 onPress={async () => {
-                  if (address) {
-                    await Clipboard.setStringAsync(address);
-                  }
+                  await Clipboard.setStringAsync(address);
                 }}
                 style={{
                   borderWidth: 1,
@@ -140,24 +137,48 @@ export default function App() {
               >
                 <Text style={{ fontSize: 16 }}>📋</Text>
               </TouchableOpacity>
-            )}
-          </View>
+            </View>
+          )}
           
-          <TouchableOpacity
-            onPress={deployContact}
-            disabled={deployingContract || !!address}
-            style={{
-              backgroundColor: (deployingContract || !!address) ? "#ccc" : "#007AFF",
-              paddingVertical: 12,
-              paddingHorizontal: 24,
-              borderRadius: 8,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
-              {deployingContract ? "Working..." : "Deploy Contract"}
-            </Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            {!address && !deployingContract && (
+              <TouchableOpacity
+                onPress={() => {
+                  // Insert contract logic will go here
+                }}
+                style={{
+                  flex: 1,
+                  backgroundColor: "#5856D6",
+                  paddingVertical: 12,
+                  paddingHorizontal: 24,
+                  borderRadius: 8,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
+                  Insert
+                </Text>
+              </TouchableOpacity>
+            )}
+            
+            <TouchableOpacity
+              onPress={deployContact}
+              disabled={deployingContract || !!address}
+              style={{
+                flex: (!address && !deployingContract) ? 1 : undefined,
+                width: (address || deployingContract) ? "100%" : undefined,
+                backgroundColor: (deployingContract || !!address) ? "#ccc" : "#007AFF",
+                paddingVertical: 12,
+                paddingHorizontal: 24,
+                borderRadius: 8,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
+                {deployingContract ? "Working..." : "Deploy"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* NFT Box */}
