@@ -2,6 +2,7 @@
 import "react-native-get-random-values"; // required by ethers in RN
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, AppRegistry } from "react-native";
+import * as Clipboard from 'expo-clipboard';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ethers } from "ethers";
 import artifact from "./Artonchain.json"; // <— copied from Foundry out/
@@ -98,7 +99,49 @@ export default function App() {
         }}>
           <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 12 }}>Contract</Text>
           <Text selectable style={{ marginBottom: 4 }}>RPC: {RPC_URL ?? "(not set)"}</Text>
-          <Text selectable style={{ marginBottom: 12 }}>Contract: {address ?? "(not deployed yet)"}</Text>
+          
+          <View style={{ flexDirection: "row", marginBottom: 12, gap: 8 }}>
+            <View style={{
+              flex: 1,
+              borderWidth: 1,
+              borderColor: "#ddd",
+              borderRadius: 4,
+              padding: 8,
+              backgroundColor: "#fff"
+            }}>
+              <Text style={{ fontSize: 12, color: "#666", marginBottom: 2 }}>Contract</Text>
+              <Text 
+                selectable 
+                style={{ fontSize: 14 }} 
+                numberOfLines={1} 
+                ellipsizeMode="tail"
+              >
+                {address ?? "(not deployed yet)"}
+              </Text>
+            </View>
+            
+            {address && (
+              <TouchableOpacity
+                onPress={async () => {
+                  if (address) {
+                    await Clipboard.setStringAsync(address);
+                  }
+                }}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#ddd",
+                  borderRadius: 4,
+                  padding: 8,
+                  backgroundColor: "#fff",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: 40,
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>📋</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           
           <TouchableOpacity
             onPress={deployContact}
