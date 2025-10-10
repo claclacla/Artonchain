@@ -16,6 +16,8 @@ export default function App() {
   const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
   const [mintedTxHash, setMintedTxHash] = useState<string | null>(null);
   const [uriError, setUriError] = useState<string | null>(null);
+  const [insertedAddress, setInsertedAddress] = useState("");
+  const [activeTab, setActiveTab] = useState<"insert" | "deploy">("deploy");
 
   const deployContact = async () => {
     if (!RPC_URL || !PRIVATE_KEY) {
@@ -99,86 +101,145 @@ export default function App() {
         }}>
           <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 12 }}>Contract</Text>
           
-          {address && (
-            <View style={{ flexDirection: "row", marginBottom: 12, gap: 8 }}>
-              <View style={{
-                flex: 1,
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 4,
-                padding: 8,
-                backgroundColor: "#fff"
-              }}>
-                <Text style={{ fontSize: 12, color: "#666", marginBottom: 2 }}>Contract</Text>
-                <Text 
-                  selectable 
-                  style={{ fontSize: 14 }} 
-                  numberOfLines={1} 
-                  ellipsizeMode="tail"
-                >
-                  {address}
-                </Text>
-              </View>
-              
-              <TouchableOpacity
-                onPress={async () => {
-                  await Clipboard.setStringAsync(address);
-                }}
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#ddd",
-                  borderRadius: 4,
-                  padding: 8,
-                  backgroundColor: "#fff",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: 40,
-                }}
-              >
-                <Text style={{ fontSize: 16 }}>📋</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          
-          <View style={{ flexDirection: "row", gap: 8 }}>
-            {!address && !deployingContract && (
-              <TouchableOpacity
-                onPress={() => {
-                  // Insert contract logic will go here
-                }}
-                style={{
+          <View style={{ marginBottom: 12 }}>
+            <Text style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>Contract Address</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Text 
+                selectable={!!address}
+                style={{ 
+                  fontSize: 14, 
                   flex: 1,
-                  backgroundColor: "#5856D6",
-                  paddingVertical: 12,
-                  paddingHorizontal: 24,
-                  borderRadius: 8,
-                  alignItems: "center",
-                }}
+                  color: address ? "#000" : "#999"
+                }} 
+                numberOfLines={1} 
+                ellipsizeMode="middle"
               >
-                <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
-                  Insert
-                </Text>
-              </TouchableOpacity>
-            )}
-            
-            <TouchableOpacity
-              onPress={deployContact}
-              disabled={deployingContract || !!address}
-              style={{
-                flex: (!address && !deployingContract) ? 1 : undefined,
-                width: (address || deployingContract) ? "100%" : undefined,
-                backgroundColor: (deployingContract || !!address) ? "#ccc" : "#007AFF",
-                paddingVertical: 12,
-                paddingHorizontal: 24,
-                borderRadius: 8,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
-                {deployingContract ? "Working..." : "Deploy"}
+                {address || "(not deployed yet)"}
               </Text>
-            </TouchableOpacity>
+              {address && (
+                <TouchableOpacity
+                  onPress={async () => {
+                    await Clipboard.setStringAsync(address);
+                  }}
+                  style={{
+                    padding: 4,
+                  }}
+                >
+                  <Text style={{ fontSize: 18 }}>📋</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+          
+          <>
+              {/* Tabs */}
+              <View style={{ flexDirection: "row", marginBottom: 12, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+                <TouchableOpacity
+                  onPress={() => setActiveTab("deploy")}
+                  disabled={deployingContract}
+                  style={{
+                    flex: 1,
+                    paddingVertical: 12,
+                    alignItems: "center",
+                    borderBottomWidth: 2,
+                    borderBottomColor: activeTab === "deploy" ? "#007AFF" : "transparent",
+                  }}
+                >
+                  <Text style={{ 
+                    fontSize: 16, 
+                    fontWeight: "600",
+                    color: activeTab === "deploy" ? "#007AFF" : "#666"
+                  }}>
+                    Deploy
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  onPress={() => setActiveTab("insert")}
+                  disabled={deployingContract}
+                  style={{
+                    flex: 1,
+                    paddingVertical: 12,
+                    alignItems: "center",
+                    borderBottomWidth: 2,
+                    borderBottomColor: activeTab === "insert" ? "#5856D6" : "transparent",
+                  }}
+                >
+                  <Text style={{ 
+                    fontSize: 16, 
+                    fontWeight: "600",
+                    color: activeTab === "insert" ? "#5856D6" : "#666"
+                  }}>
+                    Insert
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Deploy Tab Content */}
+              {activeTab === "deploy" && (
+                <View>
+                  <Text style={{ marginBottom: 12, color: "#666" }}>
+                    Deploy a new smart contract to the blockchain
+                  </Text>
+                  <TouchableOpacity
+                    onPress={deployContact}
+                    disabled={deployingContract}
+                    style={{
+                      backgroundColor: deployingContract ? "#ccc" : "#007AFF",
+                      paddingVertical: 12,
+                      paddingHorizontal: 24,
+                      borderRadius: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
+                      {deployingContract ? "Working..." : "Deploy Contract"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Insert Tab Content */}
+              {activeTab === "insert" && (
+                <View>
+                  <Text style={{ marginBottom: 8 }}>Contract Address</Text>
+                  <TextInput
+                    value={insertedAddress}
+                    onChangeText={setInsertedAddress}
+                    placeholder="0x..."
+                    style={{
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                      borderRadius: 4,
+                      padding: 8,
+                      fontSize: 14,
+                      marginBottom: 12,
+                      backgroundColor: "#fff"
+                    }}
+                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (insertedAddress.trim()) {
+                        setAddress(insertedAddress.trim());
+                        setInsertedAddress("");
+                      }
+                    }}
+                    disabled={!insertedAddress.trim()}
+                    style={{
+                      backgroundColor: !insertedAddress.trim() ? "#ccc" : "#5856D6",
+                      paddingVertical: 12,
+                      paddingHorizontal: 24,
+                      borderRadius: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ color: "#fff", fontSize: 16, fontWeight: "600" }}>
+                      Insert Contract
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </>
         </View>
 
         {/* NFT Box */}
